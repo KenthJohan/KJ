@@ -1,0 +1,11 @@
+# Blacklist files and folders in this directory
+/*
+
+# Whitelist
+!.gitignore
+!*.c
+!*.pdf
+!*.h
+!*.bin
+!*.jpg
+!*.stl
