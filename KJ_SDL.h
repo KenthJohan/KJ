@@ -221,36 +221,44 @@ void KJ_SDL_Generate_Grid_Inside
 
 
 
-void KJ_SDL_Generate_Grid_Boundary 
+void KJ_SDL_Grid_Make 
 (
    struct SDL_Rect * Rectangle, 
+   size_t Count, 
    SDL_Rect * Boundary, 
    int Columns, 
    int Rows,
-   int I
+   int Offset
 )
 {
-   Rectangle->w = Boundary->w;
-   Rectangle->h = Boundary->h;
-   Rectangle->x = Boundary->x + (Boundary->w * (I % Columns));
-   Rectangle->y = Boundary->y + (Boundary->h * (I / Columns));
+   for (size_t I = 0; I < Count; I = I + 1)
+   {
+      Rectangle [I].w = Boundary->w;
+      Rectangle [I].h = Boundary->h;
+      Rectangle [I].x = Boundary->x + ((Boundary->w / Columns) * ((I + Offset) % Columns));
+      Rectangle [I].y = Boundary->y + ((Boundary->h / Rows) * ((I + Offset) / Columns));
+   }
 }
 
-void KJ_SDL_Generate_Grid_Inside_Boundary 
+
+void KJ_SDL_Grid_Make_Inside 
 (
    struct SDL_Rect * Rectangle, 
+   size_t Count, 
    SDL_Rect * Boundary, 
    int Columns, 
    int Rows,
-   int I
+   int Offset
 )
 {
-   Rectangle->w = Boundary->w / Columns;
-   Rectangle->h = Boundary->h / Rows;
-   Rectangle->x = Boundary->x + ((Boundary->w / Columns) * (I % Columns));
-   Rectangle->y = Boundary->y + ((Boundary->h / Rows) * (I / Columns));
+   for (size_t I = 0; I < Count; I = I + 1)
+   {
+      Rectangle [I].w = Boundary->w / Columns;
+      Rectangle [I].h = Boundary->h / Rows;
+      Rectangle [I].x = Boundary->x + ((Boundary->w / Columns) * ((I + Offset) % Columns));
+      Rectangle [I].y = Boundary->y + ((Boundary->h / Rows) * ((I + Offset) / Columns));
+   }
 }
-
 
 
 

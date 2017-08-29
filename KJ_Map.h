@@ -23,6 +23,8 @@ int KJ_Map_int (int X, int A0, int A1, int B0, int B1)
    if (DA == 0) {return B1;};
    X = X / DA; //Scale down
    X = X + B0;
+   assert (X <= B1);
+   assert (X >= B0);
    return X;
 }
 
@@ -52,6 +54,7 @@ float KJ_Map_float (float X, float A0, float A1, float B0, float B1)
    // X = (X-A0) * ((DB + K) / (DA + K)) + B0
    X = X - A0;
    X = X * DB; //Scale up before scale down is important for intergers.
+   if (DA == 0) {return B1;};
    X = X / DA; //Scale down
    X = X + B0;
    return X;
