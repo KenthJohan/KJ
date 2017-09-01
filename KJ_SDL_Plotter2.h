@@ -49,7 +49,7 @@ void KJ_SDL_Plot_Append (struct KJ_SDL_Plot * Plot, int Y, int A0, int A1)
    Plot->Points [Plot->Index].y = Y;
    
    //printf ("(%i %i)\n", Plot->Rectangle->x, Plot->Rectangle->y);
-   printf ("(%i %i)\n", Plot->Points [Plot->Index].x, Plot->Points [Plot->Index].y);
+   //printf ("(%i %i)\n", Plot->Points [Plot->Index].x, Plot->Points [Plot->Index].y);
    
    Plot->Index = Plot->Index + 1;
    if (Plot->Index >= (Plot->Rectangle->w / Plot->Scale_X))

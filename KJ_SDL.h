@@ -159,7 +159,13 @@ void KJ_SDL_Render_Text (SDL_Renderer * Renderer, TTF_Font * Font, SDL_Rect * Re
 }
 
 
-FILE * KJ_SDL_Open_FFmpeg_Pipe (SDL_DisplayMode * Display, SDL_PixelFormat * Format, char const * Path, size_t FPS)
+FILE * KJ_SDL_Open_FFmpeg_Pipe 
+(
+   SDL_DisplayMode * Display, 
+   SDL_PixelFormat * Format, 
+   char const * Path, 
+   size_t FPS
+)
 {
    char Command [300] = {'\0'};
    size_t const Thread_Count = 2;
@@ -173,10 +179,38 @@ FILE * KJ_SDL_Open_FFmpeg_Pipe (SDL_DisplayMode * Display, SDL_PixelFormat * For
    sprintf (Command, "%s %s 2>/dev/null", Command, Path);
    printf ("\n\n%s\n\n", Command);
    File = NULL;
-   //File = popen (Command, "w");
+   File = popen (Command, "w");
    assert (File != NULL);
-   return NULL;
+   return File;
 }
+
+/*
+int aaa 
+(
+   FILE * File
+   SDL_Renderer * Renderer,
+   SDL_DisplayMode * Display, 
+   SDL_PixelFormat * Format, 
+   char const * Path, 
+   size_t FPS
+)
+{
+   SDL_Rect Rectangle;
+   Rectangle.x = 0;
+   Rectangle.y = 0;
+   Rectangle.w = Display.w;
+   Rectangle.h = Display.h;
+   SDL_RenderReadPixels (Renderer, &Rectangle, SDL_PIXELFORMAT_RGB888, Application->Video_Frame, 4 * Width);
+   size_t N = fwrite (Application->Video_Frame, 4 * Width * Height, 1, Application->Video_Pipe);
+   fflush (Application->Video_Pipe);
+   //printf ("N %i\n", N);
+   assert (N == 1);
+   return 1;
+}
+*/
+
+
+
 
 void KJ_SDL_Center_Scale (SDL_Rect * Rectangle, int X, int Y)
 {
@@ -277,6 +311,7 @@ struct KJ_SDL_Context
    int                    Pending_Event;
    void              *    Frame;
    size_t                 Frame_Size;
+   uint32_t               Screenshot_Count;
 };
 
 
@@ -301,6 +336,7 @@ void KJ_SDL_Context_Construct (struct KJ_SDL_Context * Item)
    //Item->Font = KJ_TTF_OpenFont_Try ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 40);
    Item->Font = KJ_TTF_OpenFont_Try ("/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf", 40);
    KJ_SDL_Context_Allocate_Frame (Item);
+   Item->Screenshot_Count = 0;
 }
 
 void KJ_SDL_Context_Print_Info (struct KJ_SDL_Context * Item)
@@ -388,6 +424,8 @@ void KJ_SDL_Frame_Capture (struct KJ_SDL_Context * Item)
 
 void KJ_SDL_Frame_Save_BMP (struct KJ_SDL_Context * Item, char const * Path)
 {
+   char Filename [20] = {'\0'};
+   sprintf (Filename, "%s_%i.bmp", Path, Item->Screenshot_Count);
    int Width = Item->Display_Mode->w;
    int Height = Item->Display_Mode->h;
    int Depth = Item->Pixel_Format->BytesPerPixel;
@@ -397,8 +435,9 @@ void KJ_SDL_Frame_Save_BMP (struct KJ_SDL_Context * Item, char const * Path)
    Surface = SDL_CreateRGBSurfaceWithFormatFrom (Item->Frame, Width, Height, Depth, Pitch, Format);
    assert (Surface != NULL);
    //fprintf (stderr, "Couldn't create SDL_Surface from renderer pixel data. SDL_GetError() - %s\n", SDL_GetError());
-   SDL_SaveBMP (Surface, Path);
+   SDL_SaveBMP (Surface, Filename);
    SDL_FreeSurface (Surface);
+   Item->Screenshot_Count = Item->Screenshot_Count + 1;
 }
 
 

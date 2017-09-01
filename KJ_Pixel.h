@@ -70,3 +70,26 @@ void KJ_Pixel_Grayscale16_To_ABGR8888
       Destination [I].A = 255;
    }
 }
+
+
+
+
+void KJ_Pixel_float_To_ABGR8888 
+(
+   float const * Source, 
+   struct KJ_Pixel_ABGR8888 * Destination, 
+   size_t Pixmap_Count, 
+   struct KJ_Pixel_ABGR8888 const * Colormap,
+   size_t Color_Count
+)
+{
+   for (size_t I = 0; I < Pixmap_Count; I = I + 1)
+   {
+      assert (Source [I] >= 0);
+      assert (Source [I] < Color_Count);
+      Destination [I].R = Colormap [(size_t) Source [I]].R;
+      Destination [I].G = Colormap [(size_t) Source [I]].G;
+      Destination [I].B = Colormap [(size_t) Source [I]].B;
+      Destination [I].A = 255;
+   }
+}

@@ -16,18 +16,17 @@ int KJ_Map_int (int X, int A0, int A1, int B0, int B1)
    int DB;
    DA = A1 - A0;
    DB = B1 - B0;
-   if (DA > DB) {DA = DA + 1; DB = DB + 1;}
-   // X = (X-A0) * ((DB + K) / (DA + K)) + B0
-   X = X - A0;
-   X = X * DB; //Scale up before scale down is important for intergers.
-   if (DA == 0) {return B1;};
-   X = X / DA; //Scale down
-   X = X + B0;
+   if (DA > DB) {DA = DA + 1; DB = DB + 1;} //Round up or down
+                              // X = (X-A0) * ((DB + K) / (DA + K)) + B0
+   X = X - A0;                // Move to zero.
+   X = X * DB;                // Scale up before scaling down is important for integers.
+   if (DA == 0) {return B1;}; // Zero division protection.
+   X = X / DA;                // Scale down
+   X = X + B0;                // Move 
    assert (X <= B1);
    assert (X >= B0);
    return X;
 }
-
 
 void KJ_Map_u16v 
 (
@@ -52,12 +51,26 @@ float KJ_Map_float (float X, float A0, float A1, float B0, float B1)
    DA = A1 - A0;
    DB = B1 - B0;
    // X = (X-A0) * ((DB + K) / (DA + K)) + B0
-   X = X - A0;
-   X = X * DB; //Scale up before scale down is important for intergers.
-   if (DA == 0) {return B1;};
-   X = X / DA; //Scale down
-   X = X + B0;
+   X = X - A0;                // 1. Move to zero.
+   X = X * DB;                // 3. Set custum scale.
+   if (DA == 0) {return B1;}; // Zero division protection.
+   X = X / DA;                // 2. Normalize.
+   X = X + B0;                // 4. Set custum offset.
    return X;
+}
+
+void KJ_Map_fv 
+(
+   float const * X, 
+   float * Y, 
+   size_t Count, 
+   float A0, float A1, float B0, float B1
+)
+{
+   for (size_t I = 0; I < Count; I = I + 1)
+   {
+      Y [I] = KJ_Map_float (X [I], A0, A1, B0, B1);
+   }
 }
 
 int KJ_Map_Index2D_Asserted
@@ -75,4 +88,11 @@ int KJ_Map_Index2D_Asserted
    return Index;
 }
 
+void KJ_Map_u16_float (uint16_t const * Source, float * Destination, size_t Count)
+{
+   for (size_t I = 0; I < Count; I = I + 1)
+   {
+      Destination [I] = (float) Source [I];
+   }
+}
 
