@@ -20,6 +20,12 @@ struct KJ_Range_int
    int B;
 };
 
+struct KJ_Range_u16
+{
+   uint16_t A;
+   uint16_t B;
+};
+
 struct KJ_Range_float
 {
    float A;
@@ -40,38 +46,6 @@ void KJ_Range_float_Init (struct KJ_Range_float * Range)
 }
 
 
-void KJ_Range_Relax_GT_int (int * Max, int Value)
-{
-   if (Value > *Max)
-   {
-      *Max = Value;
-   }
-}
-
-void KJ_Range_Relax_LT_int (int * Min, int Value)
-{
-   if (Value < *Min)
-   {
-      *Min = Value;
-   }
-}
-
-void KJ_Range_Relax_GT_float (float * Max, float Value)
-{
-   if (Value > *Max)
-   {
-      *Max = Value;
-   }
-}
-
-void KJ_Range_Relax_LT_float (float * Min, float Value)
-{
-   if (Value < *Min)
-   {
-      *Min = Value;
-   }
-}
-
 void KJ_Range_Primitive_Find_int
 (
    int const * Data, 
@@ -83,8 +57,14 @@ void KJ_Range_Primitive_Find_int
    assert ((Count > 0 && Data != NULL) || (Count == 0));
    for (size_t I = 0; I < Count; I = I + 1)
    {
-      KJ_Range_Relax_GT_int (Max, Data [I]);
-      KJ_Range_Relax_LT_int (Min, Data [I]);
+      if (Data [I] > *Max)
+      {
+         *Max = Data [I];
+      }
+      if (Data [I] < *Min)
+      {
+         *Min = Data [I];
+      }
    }
    assert (*Max >= *Min);
 }
@@ -96,27 +76,51 @@ void KJ_Range_Find_int (int const * Data, size_t Count, struct KJ_Range_int * Ra
 }
 
 
-void KJ_Range_Primitive_Find_u16
+void KJ_Range0_Minmax_Shared_u16
 (
    uint16_t const * Data, 
    size_t Count, 
-   int * Min, 
-   int * Max
+   uint16_t * Min, 
+   uint16_t * Max
 )
 {
    assert ((Count > 0 && Data != NULL) || (Count == 0));
    for (size_t I = 0; I < Count; I = I + 1)
    {
-      KJ_Range_Relax_GT_int (Max, Data [I]);
-      KJ_Range_Relax_LT_int (Min, Data [I]);
+      if (Data [I] > *Max)
+      {
+         *Max = Data [I];
+      }
+      if (Data [I] < *Min)
+      {
+         *Min = Data [I];
+      }
    }
    assert (*Max >= *Min);
 }
 
 
-void KJ_Range_Find_u16 (uint16_t const * Data, size_t Count, struct KJ_Range_int * Range)
+void KJ_Range0_Minmax_Single_u16
+(
+   uint16_t const * Data, 
+   size_t Count, 
+   uint16_t * Min, 
+   uint16_t * Max
+)
 {
-   KJ_Range_Primitive_Find_u16 (Data, Count, &(Range->A), &(Range->B));
+   *Min = UINT16_MAX;
+   *Max = 0;
+   KJ_Range0_Minmax_Shared_u16 (Data, Count, Min, Max);
+}
+
+void KJ_Range_Minmax_Shared_u16 (uint16_t const * Data, size_t Count, struct KJ_Range_u16 * Range)
+{
+   KJ_Range0_Minmax_Shared_u16 (Data, Count, &(Range->A), &(Range->B));
+}
+
+void KJ_Range_Minmax_Single_u16 (uint16_t const * Data, size_t Count, struct KJ_Range_u16 * Range)
+{
+   KJ_Range0_Minmax_Single_u16 (Data, Count, &(Range->A), &(Range->B));
 }
 
 
@@ -131,8 +135,14 @@ void KJ_Range_Primitive_Find_float
    assert ((Count > 0 && Data != NULL) || (Count == 0));
    for (size_t I = 0; I < Count; I = I + 1)
    {
-      KJ_Range_Relax_GT_float (Max, Data [I]);
-      KJ_Range_Relax_LT_float (Min, Data [I]);
+      if (Data [I] > *Max)
+      {
+         *Max = Data [I];
+      }
+      if (Data [I] < *Min)
+      {
+         *Min = Data [I];
+      }
    }
    assert (*Max >= *Min);
 }

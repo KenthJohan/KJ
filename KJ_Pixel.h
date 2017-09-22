@@ -93,3 +93,25 @@ void KJ_Pixel_float_To_ABGR8888
       Destination [I].A = 255;
    }
 }
+
+
+
+
+
+void KJ_Pixel_float_To_ABGR8888_Gray 
+(
+   float const * Source, 
+   struct KJ_Pixel_ABGR8888 * Destination, 
+   size_t Pixmap_Count
+)
+{
+   for (size_t I = 0; I < Pixmap_Count; I = I + 1)
+   {
+      assert (Source [I] >= 0);
+      assert (Source [I] < 256);
+      Destination [I].R = (uint8_t) Source [I];
+      Destination [I].G = (uint8_t) Source [I];
+      Destination [I].B = (uint8_t) Source [I];
+      Destination [I].A = (uint8_t) 255;
+   }
+}

@@ -211,6 +211,11 @@ int aaa
 
 
 
+void KJ_SDL_Scale (SDL_Rect * Rectangle, float S)
+{
+   Rectangle->w = (float)Rectangle->w * S;
+   Rectangle->h = (float)Rectangle->h * S * ((float)Rectangle->w/(float)Rectangle->h);
+}
 
 void KJ_SDL_Center_Scale (SDL_Rect * Rectangle, int X, int Y)
 {
@@ -219,83 +224,6 @@ void KJ_SDL_Center_Scale (SDL_Rect * Rectangle, int X, int Y)
    Rectangle->y = Rectangle->y - Y;
    Rectangle->h = Rectangle->h + (2 * Y);
 }
-
-
-void KJ_SDL_Generate_Grid
-(
-   SDL_Rect * Rectangle, 
-   int Width, 
-   int Height, 
-   int Columns, 
-   int Rows,
-   int I
-)
-{
-   Rectangle->w = Width;
-   Rectangle->h = Height;
-   Rectangle->x = Width * (I % Columns);
-   Rectangle->y = Height * (I / Columns);
-}
-
-void KJ_SDL_Generate_Grid_Inside
-(
-   SDL_Rect * Rectangle, 
-   int Width, 
-   int Height, 
-   int Columns, 
-   int Rows,
-   int I
-)
-{
-   Rectangle->w = Width / Columns;
-   Rectangle->h = Height / Rows;
-   Rectangle->x = (Width / Columns) * (I % Columns);
-   Rectangle->y = (Height / Rows) * (I / Columns);
-}
-
-
-
-void KJ_SDL_Grid_Make 
-(
-   struct SDL_Rect * Rectangle, 
-   size_t Count, 
-   SDL_Rect * Boundary, 
-   int Columns, 
-   int Rows,
-   int Offset
-)
-{
-   for (size_t I = 0; I < Count; I = I + 1)
-   {
-      Rectangle [I].w = Boundary->w;
-      Rectangle [I].h = Boundary->h;
-      Rectangle [I].x = Boundary->x + ((Boundary->w / Columns) * ((I + Offset) % Columns));
-      Rectangle [I].y = Boundary->y + ((Boundary->h / Rows) * ((I + Offset) / Columns));
-   }
-}
-
-
-void KJ_SDL_Grid_Make_Inside 
-(
-   struct SDL_Rect * Rectangle, 
-   size_t Count, 
-   SDL_Rect * Boundary, 
-   int Columns, 
-   int Rows,
-   int Offset
-)
-{
-   for (size_t I = 0; I < Count; I = I + 1)
-   {
-      Rectangle [I].w = Boundary->w / Columns;
-      Rectangle [I].h = Boundary->h / Rows;
-      Rectangle [I].x = Boundary->x + ((Boundary->w / Columns) * ((I + Offset) % Columns));
-      Rectangle [I].y = Boundary->y + ((Boundary->h / Rows) * ((I + Offset) / Columns));
-   }
-}
-
-
-
 
 
 struct KJ_SDL_Context

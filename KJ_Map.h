@@ -70,6 +70,8 @@ void KJ_Map_fv
    for (size_t I = 0; I < Count; I = I + 1)
    {
       Y [I] = KJ_Map_float (X [I], A0, A1, B0, B1);
+      assert (Y [I] >= B0);
+      assert (Y [I] <= B1);
    }
 }
 
@@ -88,11 +90,48 @@ int KJ_Map_Index2D_Asserted
    return Index;
 }
 
+int KJ_Map_Index2D
+(
+   unsigned int Width,
+   unsigned int Height,
+   unsigned int X,
+   unsigned int Y
+)
+{
+   int Index;
+   Index = X + Width * Y;
+   return Index;
+}
+
 void KJ_Map_u16_float (uint16_t const * Source, float * Destination, size_t Count)
 {
    for (size_t I = 0; I < Count; I = I + 1)
    {
       Destination [I] = (float) Source [I];
+   }
+}
+
+
+
+
+void KJ_Map_u16_float_Flip 
+(
+   uint16_t const * Source, 
+   float * Destination, 
+   size_t Width, 
+   size_t Height
+)
+{
+   for (size_t X = 0; X < Width; X = X + 1)
+   {
+      for (size_t Y = 0; Y < Height; Y = Y + 1)
+      {
+         int I1;
+         int I2;
+         I1 = KJ_Map_Index2D_Asserted (Width, Height, X, Y);
+         I2 = KJ_Map_Index2D_Asserted (Height, Width, Y, X);
+         Destination [I2] = (float) Source [I1];
+      }
    }
 }
 
