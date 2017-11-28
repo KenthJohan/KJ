@@ -84,7 +84,7 @@ int KJ_Map_Index2D_Asserted
 )
 {
    assert ((X >= 0) || (Y >= 0) || (X < Width) || (Y < Height));
-   int Index;
+   unsigned int Index;
    Index = X + Width * Y;
    assert (Index < (Width * Height));
    return Index;
